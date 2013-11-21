@@ -1,0 +1,231 @@
+<script type="text/plain" id="photosData"><%- JSON.stringify(photos) %></script>
+<script type="text/plain" id="data"><%- JSON.stringify(data) %></script>
+
+
+<div class="select-admin-bar">
+	<div class="uk-width-9-10 uk-container-center uk-clearfix">
+		<div class="uk-float-left">
+			<span class="uk-text-small">Total:</span>
+			<span class="stat-data1 uk-text-large" data-bind="text:photos.length" ></span>
+		</div>
+		
+		<div class="uk-float-left">
+			<span class="uk-text-small">Selected:</span>
+			<span class="stat-data1 uk uk-text-large" data-bind="text:selected().length" ></span>
+		</div>
+		
+		<div class="uk-float-right">
+			<i class="uk-icon-spinner uk-icon-spin" data-bind="visible:saving()==true && view()=='select'"></i>
+			<span class="saved" style="padding-right:20px" data-bind="visible:view()=='select', style:{opacity: saved()==true ? 1 : 0}">... saved</span>
+			<a class="uk-button uk-button-small" style="padding:0 14px; margin-right:27px;" data-bind="visible:view()=='select', click:save">save</a>
+			<a class="uk-button uk-button-link" style="padding:0 14px; margin-right:27px;" data-bind="visible:view()=='review', click:toSelectState">cancel</a>
+			<a class="uk-button uk-button-large uk-button-success uk-text-center" style="width:130px;" data-bind="visible:view()=='select', click:toReviewState">Review</a>
+			<a class="uk-button uk-button-large uk-button-danger uk-text-center" style="width:130px;" data-bind="visible:view()=='review', click:submit">Submit</a>
+		</div>
+	</div>
+	
+</div>
+
+<div class="uk-container-center" style="margin-top:130px; width:900px">
+	<div class="directive">
+		<span data-bind="visible:view()=='select'">Select the photos you like:</span>
+		<span data-bind="visible:view()=='review'">Please review your selection before submitting:</span>
+	</div>
+	<div class="uk-clearfix" data-bind="foreach:view()=='select' ? $root.photos : $root.selected">
+		<div class="uk-float-left uk-width-1-3 " style="height:300px; position:relative">
+			<div class="frame true-center" data-bind="
+				css:{'selected': $root.selected.indexOf($data)>-1},
+				exec:$root.setupImg($element, $data)
+			">
+				<img class="image-cell" data-bind="attr: {src:$data}, click:$root.setEnlarge" />
+				<div style="margin-top:13px;" data-bind="visible:$root.view()=='select'">
+					<span class="select-sign">
+						<i class="uk-icon-plus-sign"></i>
+						select
+					</span>
+					<span class="check-sign" >
+						<i class="uk-icon-check"></i>
+					</span>
+					<span class="cancel-sign" >
+						<i class="uk-icon-minus"></i>
+						<span style="padding-left:5px">cancel</span>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="alert-modal" class="uk-modal" style="z-index:9999">
+	<div class="uk-modal-dialog">
+		<a class="uk-modal-close uk-close"></a>
+		<div class="uk-text-small uk-text-bold" data-bind="text:alert" style="padding:30px; border-top:solid #dfdfdf 1px; margin-top:20px"></div>
+	</div>
+</div>
+
+<div id="photo-modal" class="uk-modal">
+	<div class="uk-modal-dialog" data-bind="with:enlarge">
+		<a class="uk-modal-close uk-close" style="margin:-22px"></a>
+		<img data-bind="attr:{src:$data}" />
+		<div data-bind="visible:$root.view()=='select', css:{selected: $root.selected.indexOf($data)>-1}">
+			<span class="select-sign" data-bind="click:$root.selectPhoto">
+				<i class="uk-icon-plus-sign"></i>
+				select
+			</span>
+			<span class="check-sign" data-bind="click:$root.deselectPhoto">
+				<i class="uk-icon-check"></i>
+			</span>
+			<span class="cancel-sign" data-bind="click:$root.deselectPhoto">
+				<i class="uk-icon-minus"></i>
+				<span style="padding-left:5px">cancel</span>
+			</span>
+		</div>
+	</div>
+</div>
+
+<script>
+	(function() {
+		window.data=JSON.parse($('#data').html());
+		
+		window.View = new (function() {
+			var _this=this;
+		
+			this.photos = JSON.parse($('#photosData').html());
+
+			this.selected = ko.observableArray(data.selected||[]);
+			
+			this.enlarge=ko.observable(null);
+	
+			/*
+			select
+			review */
+			this.view = ko.observable('select');
+			this.saving=ko.observable(false);
+			this.alert=ko.observable(null);
+			
+			this.selectPhoto=function(path) {
+				_this.selected.push(path);
+			}
+			this.deselectPhoto=function(path){
+				_this.selected.remove(path);
+			}
+			this.setEnlarge=function(path) {
+				_this.enlarge(path);
+			}
+			this.setupImg=function(elm, path) {
+			
+				setTimeout(function() {
+					$(elm).find('.select-sign').on('click', function(e) {
+						_this.selectPhoto(path);
+					});
+					$(elm).find('.check-sign, .cancel-sign').on('click', function(e) {
+						_this.deselectPhoto(path);
+					});
+				});
+			}
+			this.save=save;
+			this.saved = ko.observable(null);
+			ko.computed(function() {
+				if (_this.saved()==true)
+					setTimeout(function() {
+						_this.saved(null);
+					},3000);
+			});
+			
+			this.submit=submit;
+			this.toReviewState=function() {
+				_this.view('review');
+			};
+			this.toSelectState=function() {
+				_this.view('select');
+			}
+		
+		})();
+		ko.applyBindings(View);
+		
+		function submit() {
+			var saved=save();
+			ko.computed(function() {
+				if (!saved())
+					return;
+				
+				var req = new XMLHttpRequest();
+				req.open('post', '/submit-selected/' + data.token);
+				req.onreadystatechange=function() {
+					if (req.readyState==4)
+						submitted();
+				}
+				req.send();
+			})
+		}
+		function save(){
+			var obs=ko.observable();
+			
+			data.selected=View.selected();
+			View.saving(true);
+			
+			var req = new XMLHttpRequest();
+			req.open('post', '/save-selected/' + data.token);
+			req.onreadystatechange=function() {
+				if (req.readyState==4) {
+					View.saving(false);
+					obs(true);
+					saved();
+				}
+			}
+			req.send(JSON.stringify(data));
+			
+			return obs;
+		}
+		
+		function saved() {
+			View.saved(true);
+		}
+		function submitted(){
+			View.alert('Selected photos have bene submitted to Anna.  We will contact you shortly.');
+		}
+		
+		var dirModal;
+		ko.computed(function() {
+			var alert = View.alert();
+			if (alert==null) {
+				dirModal ? dirModal.hide() : void 0;
+				return;
+			}
+			
+			dirModal = dirModal || (function() {
+				var d = new $.UIkit.modal.Modal("#alert-modal");
+				
+				$('#alert-modal').on('uk.modal.hide', function() {
+					View.alert(null);
+				});
+				
+				return d;
+			})();
+
+			dirModal.show();
+		});
+		
+		var modal;
+		ko.computed(function() {
+			var photo = View.enlarge();
+			if (photo==null) {
+				modal ? modal.hide() : void 0;
+				return;
+			}
+			
+			modal = modal || (function() {
+				var d = new $.UIkit.modal.Modal("#photo-modal");
+				
+				$('#photo-modal').on('uk.modal.hide', function() {
+					View.enlarge(null);
+				});
+				
+				return d;
+			})();
+
+			modal.show();
+		});
+		
+	})()
+</script>

@@ -1,0 +1,41 @@
+.panel{
+	background:white;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	padding:1px;
+	box-shadow:1px 1px 13px gray;
+}
+.set-wrapper {
+	background:white;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	padding:17px;
+	background-image: -moz-linear-gradient(top, #57597d, #f1f4f4, #cacbe6);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, #57597d), color-stop(0.5, #f1f4f4), color-stop(1.0, #cacbe6));	
+}
+.set{
+	background: #dfdfdf;
+	border: solid #afafaf 1px;
+	position:relative;
+	overflow:hidden;	
+}
+div.set.home {
+	width:683px;	
+}
+.set.home div.home,
+.set.contact div.contact,
+.set.category-panel div.category-panel,
+.set.gallery div.gallery {
+	display:block;	
+}
+.set.contact {
+	height:538px;
+	width:446px;	
+}
+
+.content .home{
+	width:700px;
+}
+

@@ -1,0 +1,135 @@
+.page-scroll-content{
+	position:fixed;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+.major-input-div
+{
+    width:600px;
+    margin:auto;
+	margin-top:100px;
+}
+.major-input-div .helper {
+    color: #808080;
+    float: right;
+    font-size: 11px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+    text-indent: 20px;
+    width: 400px;
+}
+.major-input-div .part-label {
+    background: none repeat scroll 0 0 #808080;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 1px 1px 5px #808080;
+    clear: both;
+    color: #FFFFFF;
+    float: left;
+    margin-left: 20px;
+    padding: 0 10px;
+}
+.major-input-div .part-input {
+    border: 3px solid #808080;
+    border-radius: 6px;
+    box-shadow: 1px 1px 3px #808080;
+    float: left;
+    font-family: Comic Sans MS;
+    font-size: 16px;
+    margin: 0;
+    padding: 10px;
+    width: 100%;
+}
+    
+.select-admin-bar{
+	background:#2b2424;
+	color:#fafafa;
+	padding:20px;
+	position:fixed;
+	top:0;
+	font-family: cursive;
+	width:100%;
+	z-index:9999;
+}	
+.stat-data1{
+	margin:0 50px 0 15px; font-size:22px;
+}
+.true-center{
+	position:absolute;
+	margin:auto;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	display:block;
+}
+.frame{
+	padding:8px;
+	border:1px solid #afafaf;
+	background:white;
+	width:200px;
+	height:190px;
+	
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	transition: all 1s ease;
+}
+.frame.selected{
+	box-shadow: 1px 1px 25px rgba(0, 255, 0, .5);
+}
+.image-cell{
+	
+}
+.select-sign{
+	padding:0 10px;
+	color:gray;
+	cursor:pointer;
+}
+.selected .select-sign{
+	display:none;
+}
+.cancel-sign{
+	display:none;
+	padding:0 10px;
+	color:#afafaf;
+	cursor:pointer;
+	float:right;
+	font-size:12px;
+	position:relative;
+	top:4px;
+}
+.selected .cancel-sign{
+	display:inline;
+}
+.check-sign{
+	display:none;
+    color: #008000;
+    font-size: 27px;
+    padding-left: 13px;
+    position: relative;
+    text-shadow: 1px 1px 0 #000000;
+    top: -5px;
+	cursor:pointer;
+}
+.selected .check-sign{
+	display:inline;
+}
+.saved{
+	opacity:0;
+	-webkit-transition:all 1s ease;
+	-moz-transition:all 1s ease;
+	-ms-transition:all 1s ease;
+	transition:all 1s ease;
+}
+#photo-modal{
+	z-index:99999;
+}
+#photo-modal > div{
+	padding:30px;
+	background:white;
+}
+.directive{
+	font-size:30px;
+}

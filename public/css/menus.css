@@ -1,0 +1,37 @@
+#left .menu {
+	text-align:right;
+	width:168px;
+	margin:auto;
+	color:white;
+	position:relative;
+	padding-left:0;
+	top:15%;
+}
+#left .menu li.category-item {
+	margin-bottom:50px;
+	cursor:pointer;
+	list-style: none;
+}
+#left .menu li.category-item a {
+	display:block;
+}
+
+#left .menu .category-item div.label {
+	font-size:35px;
+	color:white;
+	line-height:35px;
+	position:relative;
+	opcity:.9;
+}
+#left .menu .category-item div.label span {
+	position:absolute;
+	display:block;
+	width:100%;
+	height:100%;
+}
+#left .menu .category-item div.description {
+	font-style:italic;
+	color:white;
+	opacity:.5;
+	margin-left:15px;
+}

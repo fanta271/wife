@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+  
+    <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+    More info: h5bp.com/i/378 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+  
+    <!-- Mobile viewport optimized: h5bp.com/viewport -->
+    <meta name="viewport" content="width=device-width">
+    
+    <title>
+      <%
+      if (typeof title == 'string') { %> 
+        <%= title %>
+        <%
+      } %>
+    </title>
+    
+	<link rel="stylesheet" href="/css/uikit/css/uikit.gradient.min.css" />
+    <link rel='stylesheet' href='/css/first.css' />
+    <link rel='stylesheet' href='/css/menus.css' />
+    <link rel='stylesheet' href='/css/top.css' />
+    <link rel='stylesheet' href='/css/panel.css' />
+    <link rel='stylesheet' href='/css/gallery.css' />
+    <link rel='stylesheet' href='/css/last.css' /> 
+	<link rel='stylesheet' href='/css/admin.css' /> 
+    
+    <script src="https://raw.github.com/Modernizr/Modernizr/master/modernizr.js"></script>
+    <script>window.Modernizr || document.write('<script src="/scripts/modernizr-2.5.3.js"><\/script>');</script>
+      
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    
+    <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>');</script>
+	<script src="/css/uikit/js/uikit.min.js"></script>
+	<script src="/scripts/ko-3.0.0.js"></script>
+      
+    <script src='/scripts/jquery-namespace.js'></script>
+    <script src='/scripts/jquery-color-animate.js'></script>
+    <script src='/scripts/jquery.address-1.4.min.js'></script>
+    <script src='/node-uuid/uuid.js'></script>
+    
+    <script src='/scripts/Construct.js'></script>
+    <script src='/scripts/util/util.js'></script>
+    <script src='/scripts/content/bootstrap.js'></script>
+    <script src='/scripts/System.js'></script>
+      
+      <script>
+          /*
+ * KO pluggs.
+ */
+          (function () {
+              if (window.ko) {
+				ko.bindingHandlers.exec = {
+					init:function(elm, valueAccessor) {
+						valueAccessor();
+					}
+				}
+                  ko.bindingHandlers.ignore = {
+                      init: function (elm, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                          //ko.cleanNode(elm);
+
+                          //var owner = valueAccessor();
+                          //return owner == bindingContext.$root.__owner__
+                          //    ? { controlsDescendantBindings: false }
+                          //    : { controlsDescendantBindings: true };
+                          return { controlsDescendantBindings: valueAccessor() };
+                      }
+                  };
+                  ko.fakeRadio = function (obs, elm) {
+                      var grate;
+                      $(elm).bind('click', function (e) {
+
+                          clearTimeout(grate);
+                          grate = setTimeout(function () {
+                              obs(elm.getAttribute('value'));
+                          });
+                      });
+                  };
+                  ko.fakeCheckmark = function (obs, elm) {
+                      var grate;
+                      $(elm).bind('click', function (e) {
+                          clearTimeout(grate);
+                          grate = setTimeout(function () {
+                              obs(!obs());
+                          }, 60);
+                      });
+                  };
+                  ko.multi = function () {
+                      var args = [].slice.call(arguments);
+
+                      return ko.computed({
+                          read: function () {
+                              return args.map(function (v) { return v() })[0];
+                          },
+                          write: function (val) {
+                              args.forEach(function (v) { v(val); });
+                          }
+                      });
+                  };
+                  ko.get = function (target, prop, def) {
+
+                      if (target[prop] !== null && target[prop] !== undefined && target[prop].constructor != Function)
+                          def = target[prop];
+                      else
+                          def = def === undefined ? '' : def;
+
+                      var obs = target[prop];
+
+                      if (obs === undefined || obs === null)
+                          target[prop] = ko.observable(def);
+                      else if (obs.constructor !== Function)
+                          def.constructor == Array
+                              ? target[prop] = ko.observableArray(def)
+                              : target[prop] = ko.observable(def);
+                      return target[prop];
+                  };
+                  ko.listen = function () { /* obs1, obs2, obsn, fn */
+                      var args = [].slice.call(arguments);
+                      var fn = args.pop();
+
+                      var execfn = function () { }
+                      var ret = ko.computed(function () {
+                          var map = args.map(function (v) { return v(); })
+                          execfn.apply(this, map);
+                      });
+                      execfn = fn;
+                      return ret;
+                  }
+                  ko.safeBind = function (fn, ext) { /* Terminate possible current binding context and start a new binding context. */
+                      setTimeout(function () {
+                          var r = ko.computed(
+                              function () { fn() }
+                          )
+                          ext ? r.extend(ext) : void 0;
+                      });
+                  }
+                  ko.noBind = function (fn) { /* Terminate binding context. */
+                      setTimeout(function () { fn() });
+                  }
+              }
+          })();
+      </script>
+
+  </head>
+
+  <body scroll="no">
+    <%- body %>
+  </body>
+
+</html>

@@ -1,0 +1,58 @@
+<div class="page-scroll-content">
+    <div class="major-input-div">
+		<form id="login-form" action="/try-login" method="post">
+			<div class="uk-clearfix">
+				<div class="helper">
+					Please enter the login token provided.  If you do not have one yet contact
+					Anna for details on how to attain one.  We may still be working on your pictures.
+					Please be patient. 
+				</div>
+				<div class="part-label">Login Token</div>
+				<input type="text" id="user-name" class="part-input" />
+			</div>
+			
+			<div class="error uk-text-small uk-text-center uk-margin-top uk-hidden" style="color:#c83232">
+				User token does not exist.  Enter the token supplied or contact Anna for assistance
+			</div>
+			
+			<div class="uk-float-right uk-margin-top uk-width-2-10">
+				<button type="submit" class="uk-text-center uk-width-1-1 uk-button uk-button-success uk-pull-2-10">
+					<i class="spinner uk-icon-spinner uk-icon-spin" style="visibility:hidden; margin-left: -24px;margin-right: 9px;"></i>
+					Login
+				</button>
+			</div>
+			
+			
+			<div style="clear:both" ></div>
+		</form>
+    </div>
+</div>
+
+<script>
+	(function() {
+	
+		$(document).on('submit', '#login-form', function(e) {
+			e.preventDefault();
+			
+			var token = $('#user-name').val();
+			
+			var $form = $(this);
+			$('.spinner').css('visibility','visible');
+			$.post($form[0].action, {userName: token}, function(res) {
+				$('.spinner').css('visibility','hidden');
+				if (!res.success){
+					badUserName();
+					return;
+				}
+				
+				location='/select-photos/' + token;
+			});
+		});
+	
+		function badUserName(){
+		
+			$('.error').removeClass('uk-hidden');
+		}
+	
+	})();
+</script>
